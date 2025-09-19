@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste du merch</title>
+</head>
+<body>
+<h1>Liste du merch</h1>
+<ul>
+    {% for listing in listings %}
+    <li>{{ listing.title }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>

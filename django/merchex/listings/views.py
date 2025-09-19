@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 
 from .models import Band, Listing
 
@@ -18,60 +19,44 @@ def hello(request):
     :rtype: HttpResponse
     """
     bands = Band.objects.all()
-    return HttpResponse(f"""
-            <h1>Hello Django !</h1>
-            <p>Mes groupes préférés sont :<p>
-            <ul>
-                <li>{bands[0].name}</li>
-                <li>{bands[1].name}</li>
-                <li>{bands[2].name}</li>
-            </ul>
-    """)
+    return render(request, "listings/hello.html", {"bands": bands})
 
 
 def about(request):
     """
-    Handles the 'About' page request and returns an HTTP response with
-    the content of the 'About' page. This page typically includes a
-    message regarding the purpose or goals of the website or organization.
+    Render the 'about' page.
+
+    This function handles rendering the "about.html" template for the user.
 
     :param request: The HTTP request object.
-    :type request: HttpRequest
-    :return: An HTTP response containing the 'About' page content.
-    :rtype: HttpResponse
+    :return: A rendered "about.html" template as an HTTP response.
     """
-    return HttpResponse("<h1>À propos</h1> <p>Nous adorons merch !</p>")
+    return render(request, "listings/about.html")
 
 
 def listings(request):
     """
-    Retrieves a list of all listings from the database, constructs an HTML
-    response displaying their titles, and returns the response.
+    Fetches and renders all the available listings.
+
+    This function retrieves all the listings from the database using the
+    Listing model and renders the listings page with the fetched data.
 
     :param request: The HTTP request object.
-    :return: An HTTP response object containing an HTML representation
-        of the listing titles.
+    :type request: HttpRequest
+    :return: Rendered HTML response with the listings information.
+    :rtype: HttpResponse
     """
     listings = Listing.objects.all()
-    return HttpResponse(f"""
-            <h1>Listings</h1>
-            <ul>
-                <li>{listings[0].title}</li>
-                <li>{listings[1].title}</li>
-                <li>{listings[2].title}</li>
-                <li>{listings[3].title}</li>
-            </ul>
-    """)
+    return render(request, "listings/listings.html", {"listings": listings})
 
 
 def contact(request):
     """
-    Handles the contact page request and returns an HTTP response with a simple
-    HTML content.
+    Handles the request for the contact page and renders the corresponding HTML template.
 
-    :param request: The HTTP request object.
+    :param request: HttpRequest object representing the request context
     :type request: HttpRequest
-    :return: An HTTP response with the contact page content.
+    :return: HttpResponse object rendering the contact.html template
     :rtype: HttpResponse
     """
-    return HttpResponse("<h1>Contact</h1>")
+    return render(request, "listings/contact.html")
