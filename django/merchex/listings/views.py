@@ -2,7 +2,7 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from .forms import ContactUsForm, BandForm
+from .forms import ContactUsForm, BandForm, ListingForm
 from .models import Band, Listing
 
 
@@ -61,6 +61,60 @@ def band_create(request):
     return render(request, "listings/band_create.html", {"form": form})
 
 
+def band_update(request, id):
+    """
+    Updates information for a specific band identified by its id. The function retrieves
+    the band instance using the given id, initializes a form with the band's existing
+    data, and renders the update page with the pre-filled form.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :param id: The unique identifier of the band to be updated.
+    :type id: int
+    :return: The HTTP response rendering the band update page with the pre-filled form.
+    :rtype: HttpResponse
+    """
+    band = Band.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = BandForm(request.POST, instance=band)
+        if form.is_valid():
+            form.save()
+            return redirect('band-detail', band.id)
+    else:
+        form = BandForm(instance=band)
+
+    return render(request,
+                  'listings/band_update.html',
+                  {'form': form})
+
+
+def band_delete(request, id):
+    """
+    Deletes a specific band and renders a confirmation page.
+
+    This function retrieves a band by its ID and renders a deletion confirmation page.
+    It does not perform deletion itself, but prepares the data necessary for confirmation.
+
+    :param request: The HTTP request object that contains metadata about the request.
+    :type request: HttpRequest
+    :param id: The unique identifier for the band to be deleted.
+    :type id: int
+    :return: The rendered HTML response displaying the band delete confirmation page.
+    :rtype: HttpResponse
+    """
+    band = Band.objects.get(id=id)  # nécessaire pour GET et pour POST
+
+    if request.method == 'POST':
+        band.delete()
+
+        return redirect('band-list')
+
+    return render(request,
+                  'listings/band_delete.html',
+                  {'band': band})
+
+
 def about(request):
     """
     Render the 'about' page.
@@ -104,6 +158,30 @@ def listing_detail(request, id):
     """
     listing = Listing.objects.get(id=id)
     return render(request, "listings/listing_detail.html", {"listing": listing})
+
+
+def listing_create(request):
+    """Handles the creation of a new listing.
+
+    This function processes both the display of the form for creating listings and the actual
+    submission of the form with valid data, leading to the creation of a new listing instance.
+    Upon successful creation, it redirects the user to view the details of the created listing.
+    If the form is not valid or not a POST request, it displays the empty or invalid form.
+
+    :param request: The HTTP request object containing request metadata and, in the case of
+        POST requests, the form data to be processed.
+    :return: An HTTP response object, which is either a redirect to the created listing's
+        detail page upon successful form submission or a rendered template displaying the
+        form, including validation errors if present.
+    """
+    if request.method == 'POST':
+        form = ListingForm(request.POST)
+        if form.is_valid():
+            listing = form.save()
+            return redirect('listing-detail', listing.id)
+    else:
+        form = ListingForm()
+    return render(request, "listings/listing_create.html", {"form": form})
 
 
 def contact(request):

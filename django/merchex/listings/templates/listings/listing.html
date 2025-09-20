@@ -5,6 +5,7 @@
     <title>Liste du merch</title>
 </head>
 <body>
+<a href="{% url 'listing-create' %}">Créer un nouveau merch</a>
 <h1>Liste du merch</h1>
 <ul>
     {% for listing in listings %}
