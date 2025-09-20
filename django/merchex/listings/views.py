@@ -2,7 +2,7 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from .forms import ContactUsForm
+from .forms import ContactUsForm, BandForm
 from .models import Band, Listing
 
 
@@ -37,6 +37,28 @@ def band_detail(request, id):
     """
     band = Band.objects.get(id=id)
     return render(request, "listings/band_detail.html", {"band": band})
+
+
+def band_create(request):
+    """
+    Handles the creation of a new band entry through an HTTP request. This function
+    renders a form for creating a new band and facilitates user interaction to
+    submit the form.
+
+    :param request: HTTP request object that provides details about the incoming
+        HTTP request from the client.
+    :type request: HttpRequest
+    :return: Rendered HTML template for the band creation form.
+    :rtype: HttpResponse
+    """
+    if request.method == 'POST':
+        form = BandForm(request.POST)
+        if form.is_valid():
+            band = form.save()
+            return redirect('band-detail', band.id)
+    else:
+        form = BandForm()
+    return render(request, "listings/band_create.html", {"form": form})
 
 
 def about(request):
