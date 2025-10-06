@@ -2,22 +2,30 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 )
 
 func main() {
-	var a, b int
-	fmt.Print("Entrez le premier nombre : ")
-	fmt.Scanln(&a)
-	fmt.Print("Entrez le deuxième nombre : ")
-	fmt.Scanln(&b)
+	fmt.Println("Hello, World! Welcome to 'Try to guess the number' !")
 
-	fmt.Println("Addition :", a+b)
-	fmt.Println("Soustraction :", a-b)
-	fmt.Println("Multiplication :", a*b)
-	if b != 0 {
-		fmt.Println("Division :", a/b)
-	} else {
-		fmt.Println("Division par zéro impossible")
+	number := rand.Intn(100)
+	fmt.Println(number)
+	count := 0
+
+	var guess int
+
+	for {
+		fmt.Print("Enter a number between 0 and 100:")
+		fmt.Scan(&guess)
+		count++
+
+		if guess == number {
+			fmt.Println("You guessed it in", count, "tries!")
+			break
+		} else if guess < number {
+			fmt.Println("Too low!")
+		} else {
+			fmt.Println("Too high!")
+		}
 	}
-	fmt.Println("Modulo :", a%b)
 }
